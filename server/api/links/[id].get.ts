@@ -14,7 +14,6 @@ export default eventHandler(async (event) => {
         limit: 10,
         orderBy: desc(tables.activities.timestamp),
       },
-      stats: true,
     },
   })
 

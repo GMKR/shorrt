@@ -22,11 +22,13 @@ export const users = sqliteTable("users", {
 export const links = sqliteTable("links", {
   id: int().primaryKey(),
   slug: text().notNull().unique(),
-  title: text().notNull(),
-  description: text(),
   url: text().notNull(),
+  title: text(),
+  description: text(),
   isActive: integer({ mode: "boolean" }).notNull().default(true),
   config: text({ mode: "json" }).$type<LinkConfig>(),
+  visits: int().notNull().default(0),
+  lastVisit: integer({ mode: "timestamp_ms" }),
   ...dbtimestamps,
 })
 
@@ -56,35 +58,13 @@ export const activities = sqliteTable("activities", {
   index("activity_timestamp_idx").on(t.timestamp),
 ])
 
-export const stats = sqliteTable("stats", {
-  linkId: int().references(() => links.id, {
-    onDelete: "cascade",
-    onUpdate: "cascade",
-  }).primaryKey(),
-  clicks: int().notNull().default(0),
-  uniqueVisitors: int().notNull().default(0),
-  lastClickedAt: integer({ mode: "timestamp_ms" }),
-  ...dbtimestamps,
-}, t => [
-  index("stats_link_idx").on(t.linkId),
-  index("stats_last_clicked_at_idx").on(t.lastClickedAt),
-])
-
 export const linkRelations = relations(links, ({ many }) => ({
-  stats: many(stats),
   activities: many(activities),
 }))
 
 export const activityRelations = relations(activities, ({ one }) => ({
   link: one(links, {
     fields: [activities.linkId],
-    references: [links.id],
-  }),
-}))
-
-export const statsRelations = relations(stats, ({ one }) => ({
-  link: one(links, {
-    fields: [stats.linkId],
     references: [links.id],
   }),
 }))

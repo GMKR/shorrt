@@ -1,5 +1,5 @@
 import type { IncomingRequestCfProperties } from "@cloudflare/workers-types"
-import { and, eq } from "drizzle-orm"
+import { and, eq, sql } from "drizzle-orm"
 import type { H3Event } from "h3"
 import { UAParser } from "ua-parser-js"
 
@@ -70,21 +70,28 @@ export const useRecordLinkActivity = async (id: number, event: H3Event) => {
   const allHeaders = getRequestHeaders(event)
   const parsedUserAgent = parseUserAgent(allHeaders["user-agent"] || "")
   const recordIpAddress = useRuntimeConfig(event).visitors.recordIpAddress
-  await useDb().insert(tables.activities).values({
-    linkId: id,
-    ip: recordIpAddress ? allHeaders["cf-connecting-ip"] : null,
-    asOrg: cf.asOrganization,
-    country: cf.country,
-    region: cf.region,
-    city: cf.city,
-    continent: cf.continent,
-    latitude: cf.latitude,
-    longitude: cf.longitude,
-    postalCode: cf.postalCode,
-    userAgent: parsedUserAgent.ua,
-    referrer: allHeaders["referer"],
-    device: parsedUserAgent.device.type,
-    os: parsedUserAgent.os.name,
-    browser: parsedUserAgent.browser.name,
-  })
+
+  await useDb().batch([
+    useDb().insert(tables.activities).values({
+      linkId: id,
+      ip: recordIpAddress ? allHeaders["cf-connecting-ip"] : null,
+      asOrg: cf.asOrganization,
+      country: cf.country,
+      region: cf.region,
+      city: cf.city,
+      continent: cf.continent,
+      latitude: cf.latitude,
+      longitude: cf.longitude,
+      postalCode: cf.postalCode,
+      userAgent: parsedUserAgent.ua,
+      referrer: allHeaders["referer"],
+      device: parsedUserAgent.device.type || "desktop",
+      os: parsedUserAgent.os.name + " " + parsedUserAgent.os.version,
+      browser: parsedUserAgent.browser.name + " " + parsedUserAgent.browser.version + (parsedUserAgent.browser.type ? ` (${parsedUserAgent.browser.type})` : ""),
+    }),
+    useDb().update(tables.links).set({
+      visits: sql`${tables.links.visits} + 1`,
+      lastVisit: new Date(),
+    }).where(eq(tables.links.id, id)),
+  ])
 }

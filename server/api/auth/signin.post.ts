@@ -2,7 +2,7 @@
 import { eq } from "drizzle-orm"
 
 export default defineEventHandler(async (event) => {
-  const payload = await readValidatedBody(event, data => AuthLoginBodySchema.parse(data))
+  const payload = await readValidatedBody(event, data => AuthSignInBodySchema.parse(data))
 
   // Find the user
   const user = await useDb().query.users.findFirst({

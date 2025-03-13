@@ -1,2 +1,14 @@
 @import "tailwindcss" theme(static);
 @import "@nuxt/ui";
+
+html,body {
+  @apply bg-slate-100
+}
+
+:root {
+  --ui-primary: black;
+}
+
+.dark {
+  --ui-primary: white;
+}

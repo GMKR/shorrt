@@ -1,4 +1,5 @@
 import * as z from "zod"
+import { SlugSchema } from "./shared.schema"
 
 export const LinkPaginationQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
@@ -10,9 +11,9 @@ export const LinkPaginationQuerySchema = z.object({
 export type LinkPaginationQuery = z.infer<typeof LinkPaginationQuerySchema>
 
 export const LinkConfigSchema = z.object({
-  forwardQuery: z.boolean().optional().default(false),
+  forwardQuery: z.boolean().optional().default(true),
   forwardQueryExclude: z.array(z.string()).optional(),
-  queryParams: z.boolean().optional().default(false),
+  queryParams: z.array(z.string()).optional(),
   code: z.number().optional().default(302),
 })
 
@@ -23,9 +24,7 @@ export const LinkCreateBodySchema = z.object({
     required_error: "Title is required",
   }).min(1),
   description: z.string().optional(),
-  slug: z.string({
-    required_error: "Slug is required",
-  }).min(1),
+  slug: SlugSchema,
   url: z.string({
     required_error: "URL is required",
   }).url(),
@@ -40,14 +39,14 @@ export const LinkUpdateBodySchema = LinkCreateBodySchema.extend({
 
 export type LinkUpdateBody = z.infer<typeof LinkUpdateBodySchema>
 
-export const LinkActivityQuerySchema = z.object({
+export const LinkActivityListQuerySchema = z.object({
   limit: z.coerce.number().min(1).max(100).default(10),
   page: z.coerce.number().min(1).default(1),
   fromDate: z.coerce.date().optional(),
   toDate: z.coerce.date().optional(),
 })
 
-export type LinkActivityQuery = z.infer<typeof LinkActivityQuerySchema>
+export type LinkActivityListQuery = z.infer<typeof LinkActivityListQuerySchema>
 
 export const LinkActivitySchema = z.object({
   ip: z.string().optional(),

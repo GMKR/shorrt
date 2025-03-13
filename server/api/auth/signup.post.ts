@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm"
 
 export default defineEventHandler(async (event) => {
-  const payload = await readValidatedBody(event, data => AuthSignupBodySchema.parse(data))
+  const payload = await readValidatedBody(event, data => AuthSignUpBodySchema.parse(data))
   // Check if Signup is enabled
   const canSignup = await useSignupEnabledCheck(event)
   if (!canSignup) {

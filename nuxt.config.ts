@@ -1,12 +1,12 @@
 export default defineNuxtConfig({
-  modules: [
-    "@nuxthub/core",
-    "@nuxt/eslint",
-    "@nuxt/ui",
-    "nuxt-auth-utils",
-  ],
+  modules: ["@nuxthub/core", "@nuxt/eslint", "@nuxt/ui", "nuxt-auth-utils", "@vueuse/nuxt"],
   $development: {
     runtimeConfig: {
+      public: {
+        product: {
+          url: "http://localhost:3000",
+        },
+      },
       db: {
         logger: true,
       },
@@ -16,7 +16,11 @@ export default defineNuxtConfig({
   css: ["~/assets/css/main.css"],
   runtimeConfig: {
     public: {
-      url: "http://localhost:3000",
+      product: {
+        name: "Shorrt",
+        description: "Shorrt is a URL shortening service that allows you to shorten long URLs into short, easy-to-remember links.",
+        url: "",
+      },
     },
     auth: {
       signupEnabled: false,
@@ -29,6 +33,10 @@ export default defineNuxtConfig({
     },
   },
   future: { compatibilityVersion: 4 },
+  experimental: {
+    typedPages: true,
+    viewTransition: true,
+  },
   compatibilityDate: "2025-03-12",
   hub: {
     database: true,

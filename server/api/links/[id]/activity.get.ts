@@ -7,7 +7,7 @@ export default eventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "Invalid link ID" })
   }
 
-  const { limit, page, fromDate, toDate } = await getValidatedQuery(event, data => LinkActivityQuerySchema.parse(data))
+  const { limit, page, fromDate, toDate } = await getValidatedQuery(event, data => LinkActivityListQuerySchema.parse(data))
 
   const [results, total] = await Promise.all([
     useDb().query.activities.findMany({
