@@ -4,6 +4,6 @@ export default eventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "Invalid slug" })
   }
   const { id, redirectUrl, code } = await useGetRedirectLinkBySlug(slug)
-  useRecordLinkActivity(id, event)
+  await useRecordLinkActivity(id, event)
   return sendRedirect(event, redirectUrl, code)
 })
