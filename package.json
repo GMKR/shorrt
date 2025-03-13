@@ -20,11 +20,13 @@
     "drizzle-orm": "^0.40.0",
     "nuxt": "3.16.0",
     "nuxt-auth-utils": "0.5.16",
+    "ua-parser-js": "^2.0.2",
     "vue": "3.5.13",
     "vue-router": "4.5.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@iconify-json/lucide": "^1.2.29",
     "@nuxt/eslint-config": "1.2.0",
     "drizzle-kit": "^0.30.5",
     "eslint": "9.22.0",

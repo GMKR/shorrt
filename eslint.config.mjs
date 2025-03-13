@@ -5,4 +5,5 @@ export default withNuxt(
   // Your custom configs here
 ).overrideRules({
   "vue/max-attributes-per-line": ["warn", { singleline: 3 }],
+  "vue/multi-word-component-names": "off",
 })

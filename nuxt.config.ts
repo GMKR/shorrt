@@ -18,8 +18,11 @@ export default defineNuxtConfig({
     public: {
       url: "http://localhost:3000",
     },
+    auth: {
+      signupEnabled: false,
+    },
     visitors: {
-      redactIpAddress: true,
+      recordIpAddress: true,
     },
     db: {
       logger: false,

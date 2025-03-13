@@ -13,6 +13,7 @@ export const LinkConfigSchema = z.object({
   forwardQuery: z.boolean().optional().default(false),
   forwardQueryExclude: z.array(z.string()).optional(),
   queryParams: z.boolean().optional().default(false),
+  code: z.number().optional().default(302),
 })
 
 export type LinkConfig = z.infer<typeof LinkConfigSchema>
@@ -49,16 +50,15 @@ export const LinkActivityQuerySchema = z.object({
 export type LinkActivityQuery = z.infer<typeof LinkActivityQuerySchema>
 
 export const LinkActivitySchema = z.object({
-  timestamp: z.coerce.date(),
-  ip: z.string(),
-  country: z.string(),
-  region: z.string(),
-  city: z.string(),
-  userAgent: z.string(),
-  referrer: z.string(),
-  device: z.string(),
-  os: z.string(),
-  browser: z.string(),
+  ip: z.string().optional(),
+  country: z.string().optional(),
+  region: z.string().optional(),
+  city: z.string().optional(),
+  userAgent: z.string().optional(),
+  referrer: z.string().optional(),
+  device: z.string().optional(),
+  os: z.string().optional(),
+  browser: z.string().optional(),
 })
 
 export type LinkActivity = z.infer<typeof LinkActivitySchema>

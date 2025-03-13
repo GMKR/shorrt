@@ -1,5 +1,7 @@
+import type { IncomingRequestCfProperties } from "@cloudflare/workers-types"
 import { and, eq } from "drizzle-orm"
-import type { LinkActivity } from "~~/shared/types/links.schema"
+import type { H3Event } from "h3"
+import { UAParser } from "ua-parser-js"
 
 const fetchDbLinkBySlug = async (slug: string) => {
   const fetchedLink = await useDb().query.links.findFirst({
@@ -36,6 +38,11 @@ const parseLinkOptions = (to: string, options?: LinkConfig | null) => {
   return url.toString()
 }
 
+const parseUserAgent = (userAgent: string) => {
+  const parser = new UAParser(userAgent)
+  return parser.getResult()
+}
+
 export const useGetRedirectLinkBySlug = async (slug: string) => {
   const key = `link:${slug}`
   let link = await hubKV().get<Awaited<ReturnType<typeof fetchDbLinkBySlug>>>(key)
@@ -54,21 +61,30 @@ export const useGetRedirectLinkBySlug = async (slug: string) => {
   return {
     id: link.id,
     redirectUrl: parseLinkOptions(link.url, link.config),
+    code: link.config?.code || 302,
   }
 }
 
-export const useRecordLinkActivity = async (id: number, activity: LinkActivity) => {
+export const useRecordLinkActivity = async (id: number, event: H3Event) => {
+  const cf = event.context.cf as IncomingRequestCfProperties
+  const allHeaders = getRequestHeaders(event)
+  const parsedUserAgent = parseUserAgent(allHeaders["user-agent"] || "")
+  const recordIpAddress = useRuntimeConfig(event).visitors.recordIpAddress
   await useDb().insert(tables.activities).values({
     linkId: id,
-    timestamp: activity.timestamp,
-    ip: activity.ip,
-    country: activity.country,
-    region: activity.region,
-    city: activity.city,
-    userAgent: activity.userAgent,
-    referrer: activity.referrer,
-    device: activity.device,
-    os: activity.os,
-    browser: activity.browser,
+    ip: recordIpAddress ? allHeaders["cf-connecting-ip"] : null,
+    asOrg: cf.asOrganization,
+    country: cf.country,
+    region: cf.region,
+    city: cf.city,
+    continent: cf.continent,
+    latitude: cf.latitude,
+    longitude: cf.longitude,
+    postalCode: cf.postalCode,
+    userAgent: parsedUserAgent.ua,
+    referrer: allHeaders["referer"],
+    device: parsedUserAgent.device.type,
+    os: parsedUserAgent.os.name,
+    browser: parsedUserAgent.browser.name,
   })
 }
