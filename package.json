@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-app",
+  "name": "@gmkr/shorrt",
   "private": true,
   "type": "module",
   "scripts": {
