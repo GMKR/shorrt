@@ -9,14 +9,16 @@ export default eventHandler(async (event) => {
 
   const payload = await readValidatedBody(event, data => LinkUpdateBodySchema.parse(data))
 
-  await useDb().update(tables.links)
+  const [updatedLink] = await useDb().update(tables.links)
     .set({
       slug: payload.slug,
       url: payload.url,
       isActive: payload.isActive === true || payload.isActive === false ? payload.isActive : undefined,
       config: payload.config,
     })
-    .where(eq(tables.links.id, Number(id)))
-
+    .where(eq(tables.links.id, Number(id))).returning()
+  if (updatedLink) {
+    await hubKV().set(getLinkKey(updatedLink.slug), updatedLink)
+  }
   return
 })

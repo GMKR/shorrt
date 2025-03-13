@@ -3,6 +3,10 @@ import { and, eq, sql } from "drizzle-orm"
 import type { H3Event } from "h3"
 import { UAParser } from "ua-parser-js"
 
+export function getLinkKey(slug: string) {
+  return `link:${slug}`
+}
+
 const fetchDbLinkBySlug = async (slug: string) => {
   const fetchedLink = await useDb().query.links.findFirst({
     where: and(
@@ -44,7 +48,7 @@ const parseUserAgent = (userAgent: string) => {
 }
 
 export const useGetRedirectLinkBySlug = async (slug: string) => {
-  const key = `link:${slug}`
+  const key = getLinkKey(slug)
   let link = await hubKV().get<Awaited<ReturnType<typeof fetchDbLinkBySlug>>>(key)
 
   if (!link) {

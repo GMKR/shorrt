@@ -58,7 +58,7 @@ const handlePageChange = (newPage: number) => {
         </ULink>
       </template>
       <template #lastVisit-cell="{ row }">
-        {{ useHumanDateTime(row.original.lastVisit) }}
+        {{ useHumanDateTimeWithSeconds(row.original.lastVisit) }}
       </template>
       <template #createdAt-cell="{ row }">
         {{ useHumanDateTime(row.original.createdAt) }}
