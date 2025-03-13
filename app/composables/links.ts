@@ -46,8 +46,41 @@ export const useLinkActivity = (id: number, query: LinkActivityListQuery) => {
   return data
 }
 
+// Chart data composables
+export const useLinkDailyVisits = (id: number) => {
+  const data = $fetch(`/api/links/${id}/stats/daily-visits`)
+  return data
+}
+
+export const useLinkGeoDistribution = (id: number) => {
+  const data = $fetch(`/api/links/${id}/stats/geo-distribution`)
+  return data
+}
+
+export const useLinkDeviceDistribution = (id: number) => {
+  const data = $fetch(`/api/links/${id}/stats/device-distribution`)
+  return data
+}
+
+export const useLinkBrowserDistribution = (id: number) => {
+  const data = $fetch(`/api/links/${id}/stats/browser-distribution`)
+  return data
+}
+
+export const useLinkReferrerDistribution = (id: number) => {
+  const data = $fetch(`/api/links/${id}/stats/referrer-distribution`)
+  return data
+}
+
 export type LinkList = Awaited<ReturnType<typeof useLinkList>>
 export type LinkListItem = LinkList["results"][number]
 export type Link = Awaited<ReturnType<typeof useLinkSingle>>
 export type LinkActivityList = Awaited<ReturnType<typeof useLinkActivity>>
 export type LinkActivityListItem = LinkActivityList["results"][number]
+
+// Chart data types
+export type LinkDailyVisits = Awaited<ReturnType<typeof useLinkDailyVisits>>
+export type LinkGeoDistribution = Awaited<ReturnType<typeof useLinkGeoDistribution>>
+export type LinkDeviceDistribution = Awaited<ReturnType<typeof useLinkDeviceDistribution>>
+export type LinkBrowserDistribution = Awaited<ReturnType<typeof useLinkBrowserDistribution>>
+export type LinkReferrerDistribution = Awaited<ReturnType<typeof useLinkReferrerDistribution>>
